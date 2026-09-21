@@ -18,23 +18,24 @@ namespace HackerNews.WebAPI.Controllers
             _service = service;
         }
 
-        // todo exception handling
-        // logging
-        // cache
-        // comments
         [HttpGet]
         [Route("bestStories")]
-        public async Task<ActionResult<HackerNewsItemDto[]>> BestStories(int count, CancellationToken cancellationToken)
+        public async Task<ActionResult<HackerNewsItemDto[]>> GetBestStories(int count, CancellationToken cancellationToken)
         {
-            var stories = await _service.GetBestStoriesAsync(count, cancellationToken);
-
-            if (stories is null)
+            if (count <= 0)
             {
-                return NotFound();
+                _logger.LogWarning("{Method} failed. Invalid count requested: {Count}", nameof(GetBestStories), count);
+                return BadRequest("count parameter must be 1 or greater");
             }
 
+            _logger.LogInformation("{Method} called. Retrieving {Count} best stories", nameof(GetBestStories), count);
 
-            return Ok(stories.Select(x => x.ToDto()));
+            var stories = await _service.GetBestStoriesAsync(count, cancellationToken);
+            var storiesArray = stories.Select(x => x.ToDto()).ToArray();
+
+            _logger.LogInformation("{Method} succeeded. Retrieved {Count} best stories", nameof(GetBestStories), storiesArray.Length);
+
+            return Ok(storiesArray);
         }
     }
 }
