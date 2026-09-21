@@ -1,5 +1,6 @@
 using HackerNews.HackerNewsApiService;
-using HackerNews.HackerNewsApiService.Models;
+using HackerNews.WebAPI.Dtos;
+using HackerNews.WebAPI.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HackerNews.WebAPI.Controllers
@@ -17,17 +18,23 @@ namespace HackerNews.WebAPI.Controllers
             _service = service;
         }
 
+        // todo exception handling
+        // logging
+        // cache
+        // comments
         [HttpGet]
-        public async Task<ActionResult<HackerNewsItem>> Item(int id, CancellationToken cancellationToken)
+        [Route("bestStories")]
+        public async Task<ActionResult<HackerNewsItemDto[]>> BestStories(int count, CancellationToken cancellationToken)
         {
-            var item = await _service.GetItemAsync(id, cancellationToken);
+            var stories = await _service.GetBestStoriesAsync(count, cancellationToken);
 
-            if (item == null)
+            if (stories is null)
             {
                 return NotFound();
             }
 
-            return Ok(item);
+
+            return Ok(stories.Select(x => x.ToDto()));
         }
     }
 }
