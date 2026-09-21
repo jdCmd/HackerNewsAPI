@@ -54,6 +54,21 @@ namespace HackerNews.HackerNewsApiService.Tests
             result.Should().BeNull();
         }
 
+        // test to confirm api is returning the expected number of results as of the current date
+        [Test]
+        public async Task GetBestStoriesAsync_Called_ReturnsExpectedNumberOfResults()
+        {
+            // Arrange
+            var sut = GetSut();
+
+            // Act
+            var result = await sut.GetBestStoriesAsync();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(200);
+        }
+
         [TearDown]
         public void TearDown()
         {
