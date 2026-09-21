@@ -42,7 +42,7 @@ namespace HackerNews.WebApi.UnitTests
             var result = item.ToDto();
 
             // Assert
-            result.Should().BeEquivalentTo(item);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
