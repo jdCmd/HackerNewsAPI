@@ -1,4 +1,5 @@
 using HackerNews.HackerNewsApiService;
+using HackerNews.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddSingleton<IHackerNewsService, HackerNewsService>();
 builder.Services.AddSingleton<IHackerNewsClient, HackerNewsClient>();
 builder.Services.AddHttpClient<IHackerNewsClient, HackerNewsClient>(client => client.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0/"));
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -23,7 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
