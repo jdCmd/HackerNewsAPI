@@ -8,20 +8,11 @@ namespace HackerNews.WebAPI.Extensions
         public static HackerNewsItemDto ToDto(this HackerNewsItem item)
         {
             return new HackerNewsItemDto(
-                item.Id, 
-                item.Deleted, 
-                item.Type, 
-                item.By, 
-                item.Time, 
-                item.Text, 
-                item.Dead, 
-                item.Parent, 
-                item.Poll, 
-                item.Kids, 
+                item.Title,
                 item.Url, 
-                item.Score, 
-                item.Title, 
-                item.Parts, 
+                item.By,
+                item.Time == null ? null : DateTimeOffset.FromUnixTimeSeconds(item.Time.Value).ToString("yyyy-MM-dd'T'HH:mm:sszzz"),
+                item.Score,
                 item.Descendants);
         }
     }
