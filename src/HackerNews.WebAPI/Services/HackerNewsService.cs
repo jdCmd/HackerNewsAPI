@@ -1,12 +1,21 @@
 ﻿using HackerNews.HackerNewsApiService;
 using HackerNews.HackerNewsApiService.Models;
+using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HackerNews.WebAPI.Services
 {
-    public class HackerNewsService(IHackerNewsClient client) : IHackerNewsService
+    public class HackerNewsService(IHackerNewsClient client, IMemoryCache cache) : IHackerNewsService
     {
+        private const string cacheKey = "hacker-news-best-stories";
+
         public async Task<IReadOnlyList<HackerNewsItem>> GetBestStoriesAsync(int count, CancellationToken cancellationToken = default)
         {
+            if (cache.TryGetValue(cacheKey, out IReadOnlyList<HackerNewsItem>? cachedStories) && cachedStories is not null)
+            {
+                return cachedStories.Take(count).ToList();
+            }
+
             var bestStoryIds = await client.GetBestStoriesAsync(cancellationToken);
             var stories = new List<HackerNewsItem>();
 
@@ -22,10 +31,9 @@ namespace HackerNews.WebAPI.Services
                 }
             }
 
-            return stories
-                .OrderByDescending(x => x.Score)
-                .Take(count)
-                .ToList();
+            var orderedStories = stories.OrderByDescending(x => x.Score);
+            cache.Set(cacheKey, orderedStories);
+            return orderedStories.Take(count).ToList();
         }
     }
 }

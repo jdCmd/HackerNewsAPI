@@ -16,6 +16,7 @@ builder.Services.AddHttpClient<IHackerNewsClient, HackerNewsClient>(client => cl
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
