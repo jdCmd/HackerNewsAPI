@@ -7,15 +7,13 @@ namespace HackerNews.WebAPI
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            logger.LogError(exception, "Unhandled exception occured");
+            logger.LogError(exception, "Unhandled exception occurred");
 
             var (statusCode, title) = exception switch
             {
                 HttpRequestException => (StatusCodes.Status502BadGateway, "Hacker News API unavailable"),
                 _ => (StatusCodes.Status500InternalServerError, "Internal server error")
             };
-
-            httpContext.Response.StatusCode = statusCode;
 
             var problemDetails = new ProblemDetails
             {
