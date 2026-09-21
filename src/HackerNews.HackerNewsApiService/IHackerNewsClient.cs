@@ -2,6 +2,6 @@
 {
     public interface IHackerNewsClient
     {
-        Task<HackerNewsItem> GetStoryAsync(int storyId, CancellationToken cancellation);
+        Task<HackerNewsItem?> GetStoryAsync(int storyId, CancellationToken cancellation);
     }
 }
