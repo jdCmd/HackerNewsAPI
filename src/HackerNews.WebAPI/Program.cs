@@ -10,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHackerNewsService, HackerNewsService>();
 builder.Services.AddSingleton<IHackerNewsClient, HackerNewsClient>();
+builder.Services.AddHttpClient<IHackerNewsClient, HackerNewsClient>(client => client.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0/"));
 
 
 var app = builder.Build();

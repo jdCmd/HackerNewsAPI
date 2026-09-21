@@ -7,6 +7,17 @@ namespace HackerNews.HackerNewsApiService.Tests
     [TestFixture]
     public class HackerNewsClientTestFixture
     {
+        private HttpClient? _httpClient;
+
+        [SetUp]
+        public void SetUp() 
+        {
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0/")
+            };
+        }
+        
         // test the examples provided in the HackerAPI docs here: https://github.com/HackerNews/API
         [Test]
         [TestCase(8863)]
@@ -18,10 +29,10 @@ namespace HackerNews.HackerNewsApiService.Tests
         public async Task GetItemAsync_GivenExampleId_ReturnsExpected(int id)
         {
             // Arrange
-            var client = new HackerNewsClient();
+            var sut = GetSut();
 
             // Act
-            var result = await client.GetItemAsync(id);
+            var result = await sut.GetItemAsync(id);
 
             // Assert
             result.Should().NotBeNull();
@@ -34,13 +45,21 @@ namespace HackerNews.HackerNewsApiService.Tests
         public async Task GetItemAsync_NoItemWithGivenId_ReturnsNull(int id)
         {
             // Arrange
-            var client = new HackerNewsClient();
+            var sut = GetSut();
 
             // Act
-            var result = await client.GetItemAsync(id);
+            var result = await sut.GetItemAsync(id);
 
             // Assert
             result.Should().BeNull();
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _httpClient?.Dispose();
+        }
+
+        private HackerNewsClient GetSut() => new HackerNewsClient(_httpClient!);
     }
 }
