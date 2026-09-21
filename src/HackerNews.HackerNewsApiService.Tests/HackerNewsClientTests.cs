@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace HackerNews.HackerNewsApiService.Tests
 {
     [TestFixture]
-    public class HackerNewsClientTestFixture
+    public class HackerNewsClientTests
     {
         private HttpClient? _httpClient;
 
