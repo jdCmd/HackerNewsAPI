@@ -1,4 +1,4 @@
-﻿namespace HackerNews.HackerNewsApiService
+﻿namespace HackerNews.HackerNewsApiService.Models
 {
     public record HackerNewsItem(
         long Id,
