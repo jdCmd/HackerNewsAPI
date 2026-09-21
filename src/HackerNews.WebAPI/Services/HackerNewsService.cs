@@ -1,7 +1,7 @@
-﻿
+﻿using HackerNews.HackerNewsApiService;
 using HackerNews.HackerNewsApiService.Models;
 
-namespace HackerNews.HackerNewsApiService
+namespace HackerNews.WebAPI.Services
 {
     public class HackerNewsService(IHackerNewsClient client) : IHackerNewsService
     {

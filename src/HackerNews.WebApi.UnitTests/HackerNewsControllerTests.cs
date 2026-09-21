@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using HackerNews.HackerNewsApiService;
 using HackerNews.HackerNewsApiService.Models;
 using HackerNews.WebAPI.Controllers;
 using HackerNews.WebAPI.Dtos;
+using HackerNews.WebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

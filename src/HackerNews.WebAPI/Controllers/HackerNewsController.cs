@@ -1,6 +1,6 @@
-using HackerNews.HackerNewsApiService;
 using HackerNews.WebAPI.Dtos;
 using HackerNews.WebAPI.Extensions;
+using HackerNews.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HackerNews.WebAPI.Controllers

@@ -1,5 +1,6 @@
 using HackerNews.HackerNewsApiService;
 using HackerNews.WebAPI;
+using HackerNews.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

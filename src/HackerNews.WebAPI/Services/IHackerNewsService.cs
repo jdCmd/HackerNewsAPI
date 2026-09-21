@@ -1,7 +1,6 @@
-﻿
-using HackerNews.HackerNewsApiService.Models;
+﻿using HackerNews.HackerNewsApiService.Models;
 
-namespace HackerNews.HackerNewsApiService
+namespace HackerNews.WebAPI.Services
 {
     public interface IHackerNewsService
     {
