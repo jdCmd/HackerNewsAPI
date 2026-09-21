@@ -1,6 +1,6 @@
-﻿namespace HackerNews.HackerNewsApiService.Models
+namespace HackerNews.WebAPI.Dtos
 {
-    public record HackerNewsItem(
+    public record HackerNewsItemDto(
         int Id,
         bool? Deleted,
         string? Type,
