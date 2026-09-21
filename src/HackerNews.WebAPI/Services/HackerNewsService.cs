@@ -11,7 +11,7 @@ namespace HackerNews.WebAPI.Services
             var stories = new List<HackerNewsItem>();
 
             // In the docs there is no mention of the ids returned by the beststories endpoint being ordered. 
-            // Hence the assumption this is the case.
+            // Hence the assumption this is not the case.
             foreach (var storyId in bestStoryIds)
             {
                 var story = await client.GetItemAsync(storyId, cancellationToken);
