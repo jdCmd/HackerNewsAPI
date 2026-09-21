@@ -6,6 +6,6 @@ namespace HackerNews.HackerNewsApiService
     {
         Task<HackerNewsItem?> GetItemAsync(int itemId, CancellationToken cancellationToken = default);
 
-        Task<int[]?> GetBestStoriesAsync(CancellationToken cancellationToken = default);
+        Task<int[]> GetBestStoriesAsync(CancellationToken cancellationToken = default);
     }
 }
