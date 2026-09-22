@@ -16,22 +16,19 @@ namespace HackerNews.WebAPI.Services
                 return cachedStories.Take(count).ToList();
             }
 
-            var bestStoryIds = await client.GetBestStoriesAsync(cancellationToken);
-            var stories = new List<HackerNewsItem>();
-
             // In the docs there is no mention of the ids returned by the beststories endpoint being ordered. 
             // Hence the assumption this is not the case.
-            foreach (var storyId in bestStoryIds)
-            {
-                var story = await client.GetItemAsync(storyId, cancellationToken);
+            var bestStoryIds = await client.GetBestStoriesAsync(cancellationToken);
 
-                if (story is not null)
-                {
-                    stories.Add(story);
-                }
-            }
+            var tasks = bestStoryIds.Select(storyId => client.GetItemAsync(storyId, cancellationToken));
+            var stories = await Task.WhenAll(tasks);
 
-            var orderedStories = stories.OrderByDescending(x => x.Score).ToList();
+            var orderedStories = stories
+                .Where(x => x is not null)
+                .Select(x => x!)
+                .OrderByDescending(x => x.Score)
+                .ToList();
+
             cache.Set(cacheKey, orderedStories, TimeSpan.FromMinutes(5));
             return orderedStories.Take(count).ToList();
         }
