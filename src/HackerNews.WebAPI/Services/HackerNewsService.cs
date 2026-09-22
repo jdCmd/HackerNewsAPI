@@ -11,7 +11,7 @@ namespace HackerNews.WebAPI.Services
 
         public async Task<IReadOnlyList<HackerNewsItem>> GetBestStoriesAsync(int count, CancellationToken cancellationToken = default)
         {
-            if (cache.TryGetValue(cacheKey, out IReadOnlyList<HackerNewsItem>? cachedStories) && cachedStories is not null)
+            if (cache.TryGetValue(cacheKey, out List<HackerNewsItem>? cachedStories) && cachedStories is not null)
             {
                 return cachedStories.Take(count).ToList();
             }
@@ -31,8 +31,8 @@ namespace HackerNews.WebAPI.Services
                 }
             }
 
-            var orderedStories = stories.OrderByDescending(x => x.Score);
-            cache.Set(cacheKey, orderedStories);
+            var orderedStories = stories.OrderByDescending(x => x.Score).ToList();
+            cache.Set(cacheKey, orderedStories, TimeSpan.FromMinutes(5));
             return orderedStories.Take(count).ToList();
         }
     }
