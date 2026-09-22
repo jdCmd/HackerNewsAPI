@@ -1,6 +1,5 @@
 ﻿using HackerNews.HackerNewsApiService;
 using HackerNews.HackerNewsApiService.Models;
-using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace HackerNews.WebAPI.Services
