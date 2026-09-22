@@ -262,6 +262,31 @@ namespace HackerNews.WebApi.UnitTests
             }
         }
 
+        [Test]
+        public async Task GetBestStoriesAsync_CacheHasEntry_DoesNotCallHackerApiClient()
+        {
+            // Arrange
+            var stories = new List<HackerNewsItem>
+            {
+                CreateItem(1, 100),
+                CreateItem(2, 50)
+            };
+
+            _memoryCache.Set("hacker-news-best-stories", stories);
+
+            var sut = GetSut();
+
+            // Act
+            var result = await sut.GetBestStoriesAsync(2, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEquivalentTo(stories);
+
+            _hackerNewsClientMock.Verify(
+                x => x.GetBestStoriesAsync(It.IsAny<CancellationToken>()),
+                Times.Never);
+        }
+
         private HackerNewsService GetSut()
         {
             return new HackerNewsService(_hackerNewsClientMock.Object, _memoryCache);
