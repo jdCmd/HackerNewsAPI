@@ -2,6 +2,7 @@
 using HackerNews.HackerNewsApiService;
 using HackerNews.HackerNewsApiService.Models;
 using HackerNews.WebAPI.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 
@@ -11,11 +12,13 @@ namespace HackerNews.WebApi.UnitTests
     public class HackerNewsServiceTests
     {
         private Mock<IHackerNewsClient> _hackerNewsClientMock = null!;
+        private IMemoryCache _memoryCache = null!;
 
         [SetUp]
         public void Setup()
         {
             _hackerNewsClientMock = new Mock<IHackerNewsClient>();
+            _memoryCache = new MemoryCache(new MemoryCacheOptions());
         }
 
         [Test]
@@ -261,7 +264,7 @@ namespace HackerNews.WebApi.UnitTests
 
         private HackerNewsService GetSut()
         {
-            return new HackerNewsService(_hackerNewsClientMock.Object);
+            return new HackerNewsService(_hackerNewsClientMock.Object, _memoryCache);
         }
 
         private static HackerNewsItem CreateItem(int id, int score)
