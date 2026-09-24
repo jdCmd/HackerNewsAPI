@@ -16,10 +16,10 @@ namespace HackerNews.WebAPI.Services
                 return cachedStories!.Take(count).ToList();
             }
 
+            await _cacheLock.WaitAsync(cancellationToken);
+
             try
             {
-                await _cacheLock.WaitAsync(cancellationToken);
-
                 if (TryGetStoriesFromCache(out cachedStories))
                 {
                     return cachedStories!.Take(count).ToList();
