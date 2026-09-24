@@ -287,27 +287,6 @@ namespace HackerNews.WebApi.UnitTests
                 Times.Never);
         }
 
-        [Test]
-        public void Dispose_Called_Succeeds()
-        {
-            // Arrange
-            var sut = GetSut();
-
-            // Act
-            sut.Dispose();
-        }
-
-        [Test]
-        public void Dispose_CalledMultipleTimes_Succeeds()
-        {
-            // Arrange
-            var sut = GetSut();
-
-            // Act
-            sut.Dispose();
-            sut.Dispose();
-        }
-
         private HackerNewsService GetSut()
         {
             return new HackerNewsService(_hackerNewsClientMock.Object, _memoryCache);

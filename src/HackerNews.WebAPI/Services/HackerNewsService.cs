@@ -4,11 +4,10 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace HackerNews.WebAPI.Services
 {
-    public class HackerNewsService(IHackerNewsClient client, IMemoryCache cache) : IHackerNewsService, IDisposable
+    public class HackerNewsService(IHackerNewsClient client, IMemoryCache cache) : IHackerNewsService
     {
         private const string cacheKey = "hacker-news-best-stories";
         private readonly SemaphoreSlim _cacheLock = new SemaphoreSlim(1);
-        private bool disposedValue;
 
         public async Task<IReadOnlyList<HackerNewsItem>> GetBestStoriesAsync(int count, CancellationToken cancellationToken = default)
         {
@@ -52,25 +51,6 @@ namespace HackerNews.WebAPI.Services
         {
             return cache.TryGetValue(cacheKey, out cachedStories)
                    && cachedStories is not null;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    _cacheLock.Dispose();
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }
