@@ -6,7 +6,7 @@ ASP.NET Core Web API that retrieves the best N stories from the Hacker News API.
 
 ## Prerequisites
 
-* .NET SDK 8.0 or later installed
+* .NET SDK 8.0 installed
 * Internet access, as the application calls the Hacker News API
 
 ## Running the API
@@ -93,7 +93,7 @@ This runs the unit tests for the API, service, and Hacker News client.
 * Best story IDs are retrieved from the Hacker News API.
 * Story details are retrieved concurrently.
 * Concurrent cache population is protected to prevent multiple requests from refreshing the cache simultaneously.
-* External API failures are handled by the global exception handler.
+* External API and internal failures are handled by the global exception handler.
 
 ## What I Would Add With More Time
 
@@ -107,4 +107,4 @@ The following would be potential improvements for a production-ready version:
 * **Integration tests** — Add tests covering the HTTP API and the integration with the Hacker News client in addition to the unit tests.
 * **CI/CD** — Add a CI/CD pipeline to automatically build and test the application
 * **Production observability** — Add more structured logging. Add metrics for observability - eg. request duration, memory, CPU Utilisation, failure count.
-* **Cache improvements** — Consider a distributed cache such as Redis if the API were deployed across multiple instances, since `IMemoryCache` is local to each application instance.
+* **Cache improvements** — Consider a distributed cache such as Redis. A redis instance could be added to the `docker-compose.yml` (mentioned above).
