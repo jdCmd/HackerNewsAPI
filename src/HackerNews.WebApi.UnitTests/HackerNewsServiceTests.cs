@@ -12,7 +12,7 @@ namespace HackerNews.WebApi.UnitTests
     public class HackerNewsServiceTests
     {
         private Mock<IHackerNewsClient> _hackerNewsClientMock = null!;
-        private IMemoryCache _memoryCache = null!;
+        private MemoryCache _memoryCache = null!;
 
         [SetUp]
         public void Setup()
@@ -285,6 +285,55 @@ namespace HackerNews.WebApi.UnitTests
             _hackerNewsClientMock.Verify(
                 x => x.GetBestStoriesAsync(It.IsAny<CancellationToken>()),
                 Times.Never);
+        }
+
+        [Test]
+        public async Task GetBestStoriesAsync_MultipleCalls_DoesNotRepeatCallsToClient()
+        {
+            // Arrange
+            var stories = new List<HackerNewsItem>
+            {
+                CreateItem(1, 100),
+                CreateItem(2, 50)
+            };
+
+            _hackerNewsClientMock
+                .Setup(x => x.GetBestStoriesAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(stories.Select(x => x.Id).ToArray());
+
+            foreach (var story in stories)
+            {
+                _hackerNewsClientMock
+                    .Setup(x => x.GetItemAsync(story.Id, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(story);
+            }
+
+            var sut = GetSut();
+
+            // Act
+            var result1 = await sut.GetBestStoriesAsync(2, CancellationToken.None);
+            var result2 = await sut.GetBestStoriesAsync(2, CancellationToken.None);
+
+            // Assert
+            result1.Should().BeEquivalentTo(stories);
+            result2.Should().BeEquivalentTo(stories);
+
+            _hackerNewsClientMock.Verify(
+                x => x.GetBestStoriesAsync(It.IsAny<CancellationToken>()),
+                Times.Once);
+
+            foreach (var story in stories)
+            {
+                _hackerNewsClientMock.Verify(
+                    x => x.GetItemAsync(story.Id, It.IsAny<CancellationToken>()),
+                    Times.Once);
+            }
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _memoryCache.Dispose();
         }
 
         private HackerNewsService GetSut()
