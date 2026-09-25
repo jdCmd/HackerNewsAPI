@@ -91,9 +91,9 @@ This runs the unit tests for the API, service, and Hacker News client.
 ## Implementation Notes
 
 * Best story IDs are retrieved from the Hacker News API.
-* Story details are retrieved concurrently.
+* Story details are retrieved concurrently. Bounded concurrency is applied to reduce the load on the external Hacker News API.
 * Concurrent cache population is protected to prevent multiple requests from refreshing the cache simultaneously.
-* External API and internal failures are handled by the global exception handler.
+* External API and internal failures are handled by the global exception handler. More exception types could be added, but for the purposes of this task, an illustrative implementation of a global exception handler is provided.
 
 ## What I Would Add With More Time
 
@@ -103,8 +103,7 @@ The following would be potential improvements for a production-ready version:
 * **Docker support** — Add a `Dockerfile` and potentially a `docker-compose.yml` to make the application easier to build and run consistently across environments.
 * **Configuration** — Move settings such as the Hacker News API base URL and cache duration into configuration rather than keeping them in code.
 * **Resilience** — Add retry and timeout policies for transient Hacker News API failures, for example using Polly.
-* **Request throttling** — Introduce bounded concurrency when retrieving a large number of stories to avoid sending too many requests to the upstream API at once.
 * **Integration tests** — Add tests covering the HTTP API and the integration with the Hacker News client in addition to the unit tests.
-* **CI/CD** — Add a CI/CD pipeline to automatically build and test the application
-* **Production observability** — Add more structured logging. Add metrics for observability - eg. request duration, memory, CPU Utilisation, failure count.
-* **Cache improvements** — Consider a distributed cache such as Redis. A redis instance could be added to the `docker-compose.yml` (mentioned above).
+* **CI/CD** — Add a CI/CD pipeline to automatically build and test the application.
+* **Production observability** — Add more structured logging and metrics for observability, e.g. request duration, memory, CPU utilisation, and failure count.
+* **Cache improvements** — Consider a distributed cache such as Redis. A Redis instance could be added to the `docker-compose.yml` (mentioned above).
