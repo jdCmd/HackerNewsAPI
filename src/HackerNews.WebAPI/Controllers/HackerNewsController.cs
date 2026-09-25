@@ -25,7 +25,13 @@ namespace HackerNews.WebAPI.Controllers
             if (count <= 0)
             {
                 _logger.LogWarning("{Method} failed. Invalid count requested: {Count}", nameof(GetBestStories), count);
-                return BadRequest("count parameter must be 1 or greater");
+                
+                return BadRequest(new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Invalid request",
+                    Detail = "count parameter must be 1 or greater"
+                });
             }
 
             _logger.LogInformation("{Method} called. Retrieving {Count} best stories", nameof(GetBestStories), count);
