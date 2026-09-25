@@ -21,6 +21,8 @@ namespace HackerNews.WebAPI
                 Title = title
             };
 
+            httpContext.Response.StatusCode = statusCode;
+
             await problemDetailsService.WriteAsync(new ProblemDetailsContext
             {
                 HttpContext = httpContext,
