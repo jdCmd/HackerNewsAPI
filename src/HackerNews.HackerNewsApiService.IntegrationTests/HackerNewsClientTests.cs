@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace HackerNews.HackerNewsApiService.Tests
+namespace HackerNews.HackerNewsApiService.IntegrationTests
 {
     [TestFixture]
     public class HackerNewsClientTests
