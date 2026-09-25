@@ -36,15 +36,12 @@ namespace HackerNews.WebApi.IntegrationTests
             var response = await _client.GetAsync($"/hackernews/bestStories?count={count}");
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-            var problemDetails = await response.Content
-                .ReadFromJsonAsync<ProblemDetails>();
-
-            problemDetails.Should().NotBeNull();
-            problemDetails!.Status.Should().Be(400);
-            problemDetails.Title.Should().Be("Invalid request");
-            problemDetails.Detail.Should().Be("count parameter must be 1 or greater");
+            AssertErrorResponseIsAsExpected(
+                response,
+                HttpStatusCode.BadRequest,
+                StatusCodes.Status400BadRequest,
+                "Invalid request",
+                "count parameter must be 1 or greater");
         }
 
         [Test]
@@ -96,14 +93,12 @@ namespace HackerNews.WebApi.IntegrationTests
             var response = await client.GetAsync("/hackernews/bestStories?count=10");
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-
-            var problemDetails = await response.Content
-                .ReadFromJsonAsync<ProblemDetails>();
-
-            problemDetails.Should().NotBeNull();
-            problemDetails!.Status.Should().Be(StatusCodes.Status502BadGateway);
-            problemDetails.Title.Should().Be("Hacker News API unavailable");
+            AssertErrorResponseIsAsExpected(
+                response,
+                HttpStatusCode.BadGateway,
+                StatusCodes.Status502BadGateway,
+                "Hacker News API unavailable",
+                null);
         }
 
         [TearDown]
@@ -111,6 +106,17 @@ namespace HackerNews.WebApi.IntegrationTests
         {
             _client.Dispose();
             _factory.Dispose();
+        }
+
+        private static void AssertErrorResponseIsAsExpected(HttpResponseMessage response, HttpStatusCode expectedHttpStatusCode, int expectedStatusCode, string expectedTitle, string? expectedDetail)
+        {
+            response.StatusCode.Should().Be(expectedHttpStatusCode);
+
+            var problemDetails = response.Content.ReadFromJsonAsync<ProblemDetails>().Result;
+            problemDetails.Should().NotBeNull();
+            problemDetails!.Status.Should().Be(expectedStatusCode);
+            problemDetails.Title.Should().Be(expectedTitle);
+            problemDetails.Detail.Should().Be(expectedDetail);
         }
     }
 }
