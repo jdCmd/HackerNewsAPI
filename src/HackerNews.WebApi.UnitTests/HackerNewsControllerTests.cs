@@ -36,7 +36,11 @@ namespace HackerNews.WebApi.UnitTests
             // Assert
             var actionResult = result.Result.Should().BeOfType<BadRequestObjectResult>().Subject;
             actionResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            actionResult.Value.Should().Be("count parameter must be 1 or greater");
+            
+            var problemDetails = actionResult.Value.Should().BeOfType<ProblemDetails>().Subject; 
+            problemDetails.Status.Should().Be(StatusCodes.Status400BadRequest); 
+            problemDetails.Title.Should().Be("Invalid request"); 
+            problemDetails.Detail.Should().Be("count parameter must be 1 or greater");
 
             _hackerNewsServiceMock.Verify(x => x.GetBestStoriesAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
         }
