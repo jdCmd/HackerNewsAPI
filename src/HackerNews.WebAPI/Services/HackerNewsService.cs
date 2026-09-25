@@ -1,6 +1,7 @@
 ﻿using HackerNews.HackerNewsApiService;
 using HackerNews.HackerNewsApiService.Models;
 using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Concurrent;
 
 namespace HackerNews.WebAPI.Services
 {
@@ -28,12 +29,26 @@ namespace HackerNews.WebAPI.Services
                 // In the docs there is no mention of the ids returned by the beststories endpoint being ordered. 
                 // Hence the assumption this is not the case.
                 var bestStoryIds = await client.GetBestStoriesAsync(cancellationToken);
-                var tasks = bestStoryIds.Select(storyId => client.GetItemAsync(storyId, cancellationToken));
-                var stories = await Task.WhenAll(tasks);
+
+                var stories = new ConcurrentBag<HackerNewsItem>();
+                var parallelOptions = new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = 10,
+                    CancellationToken = cancellationToken
+                };
+
+                await Parallel.ForEachAsync(bestStoryIds, parallelOptions,
+                    async (storyId, token) =>
+                    {
+                        var story = await client.GetItemAsync(storyId, token);
+
+                        if (story is not null)
+                        {
+                            stories.Add(story);
+                        }
+                    });
 
                 var orderedStories = stories
-                    .Where(x => x is not null)
-                    .Select(x => x!)
                     .OrderByDescending(x => x.Score)
                     .ToList();
 
